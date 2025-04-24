@@ -7,6 +7,9 @@ import Service.MessageService;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import Model.Account;
 import Model.Message;
 import Service.AccountService;
 /**
@@ -49,13 +52,26 @@ public class SocialMediaController {
         context.json("sample text");
     }
     private void registerPost(Context context){
-        
+        ObjectMapper om = new ObjectMapper();
+        String jsonString=context.body();
+        Account account = null;
+        try {
+            account=om.readValue(jsonString, Account.class);            
+        } catch (Exception e) {
+            context.status(400);
+        }
+        account = accountService.registerAccount(account); 
+        if(account != null){
+            context.json(account);
+        } else {
+            context.status(400);
+        }
     }
     private void loginPost(Context context){
 
     }
     private void messagesPost(Context context){
-
+        
     }
     private void messagesGet(Context context){
         context.json(this.messageService.getAllMessages());
