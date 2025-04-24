@@ -30,8 +30,20 @@ public class MessageDAO {
     }
 
     public Message getMessageByID(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMessageByID'");
+        Connection connection = ConnectionUtil.getConnection();
+        Message myMessage = null;
+        try {
+            String sql = "Select * FROM message WHERE message_id=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                myMessage = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return myMessage;
     }
 
     public List<Message> getMessagesByAccount(int account_id) {

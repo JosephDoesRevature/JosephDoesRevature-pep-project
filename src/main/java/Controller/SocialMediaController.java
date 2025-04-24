@@ -4,6 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import Service.MessageService;
+import Model.Message;
 import Service.AccountService;
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -65,8 +66,10 @@ public class SocialMediaController {
          catch (NumberFormatException e) {
             mID = -1;
          }
-         
-
+         Object message = this.messageService.getMessageByID(mID);
+         if(message != null){
+            context.json(message);
+         }
     }
     private void messageDelete(Context context){
         String mString = context.pathParam("message_id");
