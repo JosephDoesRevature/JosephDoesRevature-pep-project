@@ -47,8 +47,26 @@ public class MessageDAO {
     }
 
     public List<Message> getMessagesByAccount(int account_id) {
+        Connection connection = ConnectionUtil.getConnection();
+        List<Message> myMessages = new ArrayList();
+        try {
+            String sql = "SELECT * FROM message WHERE posted_by=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, account_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Message message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
+                myMessages.add(message);
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return myMessages;
+    }
+
+    public void deleteMessageByID(int mID) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMessagesByAccount'");
+        throw new UnsupportedOperationException("Unimplemented method 'deleteMessageByID'");
     }
     
 }

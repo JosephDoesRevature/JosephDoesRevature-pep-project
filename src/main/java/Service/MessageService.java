@@ -25,6 +25,9 @@ public class MessageService {
     public List<Message> getMessagesByAccount(Account account){
         return messageDAO.getMessagesByAccount(account.account_id);
     }
+    public void deleteMessageByID(int mID) {
+        messageDAO.deleteMessageByID(mID);
+    }
     
 
 }

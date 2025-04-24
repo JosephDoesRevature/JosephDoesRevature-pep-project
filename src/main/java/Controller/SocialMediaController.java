@@ -4,6 +4,9 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import Service.MessageService;
+
+import java.util.List;
+
 import Model.Message;
 import Service.AccountService;
 /**
@@ -80,6 +83,11 @@ public class SocialMediaController {
          catch (NumberFormatException e) {
             mID = -1;
          }
+         Object message = this.messageService.getMessageByID(mID);
+         if(message != null){
+            context.json(message);
+            this.messageService.deleteMessageByID(mID);
+         }
     }
     private void messagePatch(Context context){
         String mString = context.pathParam("message_id");
@@ -98,8 +106,11 @@ public class SocialMediaController {
             aID = Integer.parseInt(aString);
          }
          catch (NumberFormatException e) {
-            aID = -1;
+            System.out.println(e.getMessage());
+            return;
          }
+         List messages = this.messageService.getMessagesByAccount(aID);
+         context.json(messages);
     }
 
 }
