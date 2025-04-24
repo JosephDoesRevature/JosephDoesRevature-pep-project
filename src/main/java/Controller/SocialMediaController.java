@@ -3,24 +3,33 @@ package Controller;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import Service.MessageService;
+import Service.AccountService;
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
  * found in readme.md as well as the test cases. You should
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+    
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
      * @return a Javalin app object which defines the behavior of the Javalin controller.
      */
+    MessageService messageService;
+    AccountService accountService;
+    public SocialMediaController(){
+        messageService = new MessageService();
+        accountService = new AccountService();
+    }
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
         app.post("/register", this::registerPost);
         app.post("/login", this::loginPost);
         app.post("/messages", this::messagesPost);
-        app.post("/messages", this::messagesGet);
+        app.get("/messages", this::messagesGet);
         app.get("/messages/{message_id}", this::messageGet);
         app.delete("/messages/{message_id}", this::messageDelete);
         app.patch("/messages/{message_id}", this::messagePatch);
@@ -45,7 +54,7 @@ public class SocialMediaController {
 
     }
     private void messagesGet(Context context){
-
+        context.json(this.messageService.getAllMessages());
     }
     private void messageGet(Context context){
         String mString = context.pathParam("message_id");
@@ -56,6 +65,8 @@ public class SocialMediaController {
          catch (NumberFormatException e) {
             mID = -1;
          }
+         
+
     }
     private void messageDelete(Context context){
         String mString = context.pathParam("message_id");
