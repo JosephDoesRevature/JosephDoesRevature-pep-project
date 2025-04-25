@@ -24,5 +24,14 @@ public class AccountService {
         }
         return this.accountDAO.registerAccount(account);
     }
+    public Account mockLogin(Account account) {
+        if(account == null || account.username == null || account.password == null){
+            return null;
+        }
+        if(account.username == "" || account.password.length() < 4){
+            return null;
+        }
+        return this.accountDAO.mockLogin(account);
+    }
     
 }

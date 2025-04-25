@@ -68,10 +68,41 @@ public class SocialMediaController {
         }
     }
     private void loginPost(Context context){
-
+        ObjectMapper om = new ObjectMapper();
+        String jsonString=context.body();
+        Account account = null;
+        try {
+            account=om.readValue(jsonString, Account.class);            
+        } catch (Exception e) {
+            context.status(401);
+        }
+        account = accountService.mockLogin(account); 
+        if(account != null){
+            context.json(account);
+        } else {
+            context.status(401);
+        }
     }
     private void messagesPost(Context context){
-        
+        ObjectMapper om = new ObjectMapper();
+        Message message = null;
+        String jsonString = context.body();
+        try {
+            message = om.readValue(jsonString, Message.class);
+            if(accountService.accountExists(message.posted_by)){
+                message = messageService.makeMessage(message);
+            } else {
+                context.status(400);
+                return; 
+            }
+        } catch (Exception e){
+            context.status(400);
+        }
+        if(message != null){
+            context.json(message);
+        } else {
+            context.status(400);
+        }
     }
     private void messagesGet(Context context){
         context.json(this.messageService.getAllMessages());

@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class MessageDAO {
 
@@ -67,6 +68,24 @@ public class MessageDAO {
     public void deleteMessageByID(int mID) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteMessageByID'");
+    }
+
+    public Message makeMessage(Message message) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "INSERT INTO message (message_text) VALUES (?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, message.message_text);
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if(rs.next()){
+                message = new Message(rs.getInt(1), message.posted_by, message.message_text, message.time_posted_epoch);
+                return message;
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
     
 }

@@ -28,6 +28,11 @@ public class MessageService {
     public void deleteMessageByID(int mID) {
         messageDAO.deleteMessageByID(mID);
     }
-    
+    public Message makeMessage(Message message){
+        if(message == null || message.message_text == "" || message.message_text.length() > 255){
+            return null;
+        }
+        return messageDAO.makeMessage(message);
+    }
 
 }
