@@ -25,14 +25,24 @@ public class MessageService {
     public List<Message> getMessagesByAccount(Account account){
         return messageDAO.getMessagesByAccount(account.account_id);
     }
-    public void deleteMessageByID(int mID) {
-        messageDAO.deleteMessageByID(mID);
+    public Message deleteMessageByID(int mID) {
+        return messageDAO.deleteMessageByID(mID);
     }
     public Message makeMessage(Message message){
         if(message == null || message.message_text == "" || message.message_text.length() > 255){
             return null;
         }
         return messageDAO.makeMessage(message);
+    }
+    public Message updateMessage(int mID, Message update) {
+        try{
+            if(update.message_text != "" && update.message_text.length() <= 255){
+                return messageDAO.updateMessage(mID, update.message_text);
+            }
+        } catch (Exception e){
+
+        }
+        return null;
     }
 
 }

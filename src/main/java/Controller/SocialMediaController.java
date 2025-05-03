@@ -130,20 +130,34 @@ public class SocialMediaController {
          catch (NumberFormatException e) {
             mID = -1;
          }
-         Object message = this.messageService.getMessageByID(mID);
+         Message message = this.messageService.deleteMessageByID(mID);
          if(message != null){
             context.json(message);
-            this.messageService.deleteMessageByID(mID);
          }
     }
     private void messagePatch(Context context){
         String mString = context.pathParam("message_id");
+        String jsonString = context.body();
+        Message update;
         int mID;
         try {
             mID = Integer.parseInt(mString);
          }
          catch (NumberFormatException e) {
             mID = -1;
+         }
+         ObjectMapper om = new ObjectMapper();
+         try{
+            update = om.readValue(jsonString, Message.class);
+         } catch (Exception e){
+            context.status(400);
+            return;
+         }
+         Object message = this.messageService.updateMessage(mID, update);
+         if(message != null){
+            context.json(message);
+         } else {
+            context.status(400);
          }
     }
     private void userMessagesGet(Context context){

@@ -65,9 +65,22 @@ public class MessageDAO {
         return myMessages;
     }
 
-    public void deleteMessageByID(int mID) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteMessageByID'");
+    public Message deleteMessageByID(int mID) {
+        Message message = getMessageByID(mID);
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "DELETE FROM message WHERE message_id=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, mID);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        if(getMessageByID(mID) == null){
+            return message;
+        } else {
+            return null;
+        }
     }
 
     public Message makeMessage(Message message) {
@@ -82,6 +95,21 @@ public class MessageDAO {
                 message = new Message(rs.getInt(1), message.posted_by, message.message_text, message.time_posted_epoch);
                 return message;
             }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public Message updateMessage(int mID, String message_text) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "UPDATE message SET message_text=? WHERE message_id=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, message_text);
+            preparedStatement.setInt(2, mID);
+            preparedStatement.executeUpdate();
+            return getMessageByID(mID);
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
